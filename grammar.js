@@ -89,6 +89,7 @@ module.exports = grammar({
     named_module: $ =>
       seq(
         "module",
+        optional($.access_modifier),
         field("name", $.long_identifier),
         repeat($._module_elem)
       ),
@@ -179,9 +180,12 @@ module.exports = grammar({
 
 
     value_declaration: $ =>
-      choice(
-        prec(PREC.LET_DECL, $.function_or_value_defn),
-        prec(PREC.DO_DECL, $.do)
+      seq(
+        optional($.attributes),
+        choice(
+          prec(PREC.LET_DECL, $.function_or_value_defn),
+          prec(PREC.DO_DECL, $.do)
+        )
       ),
 
     do: $ => prec(PREC.DO_EXPR,
